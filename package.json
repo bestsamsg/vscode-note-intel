@@ -1,0 +1,58 @@
+{
+  "name": "note-intel",
+  "displayName": "note-intel",
+  "description": "nothing",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.89.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "note-intel.NoteIntel",
+        "title": "NoteIntel"
+      }
+    ],
+	"keybindings": [
+        {
+            "command": "note-intel.NoteIntel",
+            "key": "ctrl+enter",
+            "when": "editorTextFocus"
+        }
+    ],
+	"configuration":{
+		"title":"源码修改记录配置",
+		"properties":{
+			"note-intel.prefix":{
+				"type":"string",
+				"default":"gisv",
+				"description":"注释名称"
+			}
+		}
+	}
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.94.0",
+    "@types/mocha": "^10.0.8",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^8.7.0",
+    "@typescript-eslint/parser": "^8.7.0",
+    "eslint": "^9.11.1",
+    "typescript": "^5.6.2",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
