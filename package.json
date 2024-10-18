@@ -3,7 +3,7 @@
   "displayName": "note-intel",
   "publisher": "bestsam",
   "description": " A plugin for VSCode that helps you to track the code changes",
-  "icon":"./images/marker.png",
+  "icon":"images/marker.png",
   "repository":"https://github.com/bestsamsg/vscode-note-intel",
   "version": "0.0.1",
   "engines": {

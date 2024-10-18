@@ -2,10 +2,18 @@
 提供源码修改记录注释模板
 
 ## Features
-可以使用以下方式生成 + ctrl+enter组合键生成
+可以输入以下内容，并结合ctrl+enter组合键生成注释模板
 ```
-//prefix-add
-//prefix-add-begin
+//note-add
+//note-add-begin
+
+//note-rem
+//note-remove
+//note-remove-begin
+
+//note-rep
+//note-replace
+//note-replace-begin
 ```
 
 
@@ -20,7 +28,7 @@ For example:
 
 This extension contributes the following settings:
 
-* `note-intel.prefix`: 'myprefix'
+* `note-intel.prefix`: 'note'
 
 ## Known Issues
 
