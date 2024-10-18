@@ -1,13 +1,13 @@
 /*
  * @Author: Sam
  * @Date: 2024-10-16 17:39:20
- * @LastEditTime: 2024-10-17 18:01:34
+ * @LastEditTime: 2024-10-18 09:34:09
  * @LastEditors: Sam
  */
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
-    let disposable = vscode.commands.registerCommand('note-intel.CodeIntel', () => {
+    let disposable = vscode.commands.registerCommand('note-intel.NoteIntel', () => {
 
 		const config = vscode.workspace.getConfiguration('note-intel');
 		const prefix = config.get('prefix') || 'gisv';
