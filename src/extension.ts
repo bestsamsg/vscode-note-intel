@@ -1,17 +1,11 @@
-/*
- * @Author: Sam
- * @Date: 2024-10-16 17:39:20
- * @LastEditTime: 2024-10-18 09:34:09
- * @LastEditors: Sam
- */
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.commands.registerCommand('note-intel.NoteIntel', () => {
 
-		const config = vscode.workspace.getConfiguration('note-intel');
-		const prefix = config.get('prefix') || 'gisv';
-		console.log('prefix----------------------', prefix);
+        const config = vscode.workspace.getConfiguration('note-intel');
+        const prefix = config.get('prefix') || 'gisv';
+        console.log('prefix----------------------', prefix);
 
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
@@ -24,44 +18,46 @@ export function activate(context: vscode.ExtensionContext) {
 
         // 获取光标前的内容
         const lineText = document.lineAt(position.line).text;
+        const linePrefix = lineText.slice(0, position.character); // 当前光标前的文本
 
-        // 如果检测到用户输入了“//${prefix}-replace-begin”
-        if (lineText.includes(`//${prefix}-replace-begin`) || lineText.includes(`//${prefix}-rep`)) {
+        // 记录当前行的缩进
+        const indentMatch = linePrefix.match(/^\s*/); // 匹配行首的空格或制表符
+        const currentIndent = indentMatch ? indentMatch[0] : '';
+
+        const insertText = (begin: string, end: string, to?:string) => {
             editor.edit(editBuilder => {
                 // 获取当前光标所在行，并插入目标代码
                 const newPosition = position.with(position.line, 0);
-                editBuilder.replace(new vscode.Range(newPosition, position), `//${prefix}-replace-begin\n\n//${prefix}-replace-to\n\n//${prefix}-replace-end`);
 
-                // 将光标移动到下一个编辑位置
-                const nextPosition = new vscode.Position(position.line + 1, 0);
-                editor.selection = new vscode.Selection(nextPosition, nextPosition);
+				if(!to){
+					editBuilder.replace(new vscode.Range(newPosition, position),`${currentIndent}${begin}\n${currentIndent}\n${currentIndent}${end}`);
+				}else{
+					editBuilder.replace(new vscode.Range(newPosition, position),`${currentIndent}${begin}\n${currentIndent}\n${currentIndent}${to}\n${currentIndent}\n${currentIndent}${end}`);
+				}
+                
+
+                // 将光标移动到第一行的下一行
+				setTimeout(()=>{
+					const nextPosition = new vscode.Position(position.line+1, currentIndent.length);
+                	editor.selection = new vscode.Selection(nextPosition, nextPosition);
+				}, 500);
+                
             });
+        };
+
+        // 检测 //${prefix}-replace-begin
+        if (lineText.includes(`//${prefix}-replace-begin`) || lineText.includes(`//${prefix}-rep`) || lineText.includes(`//${prefix}rep`)) {
+            insertText(`//${prefix}-replace-begin`, `//${prefix}-replace-end`, `//${prefix}-replace-to`);
         }
 
-		// 如果检测到用户输入了“//${prefix}-replace-begin”
-        if (lineText.includes(`//${prefix}-add-begin`) || lineText.includes(`//${prefix}-add`)) {
-            editor.edit(editBuilder => {
-                // 获取当前光标所在行，并插入目标代码
-                const newPosition = position.with(position.line, 0);
-                editBuilder.replace(new vscode.Range(newPosition, position), `//${prefix}-add-begin\n\n//${prefix}-add-end`);
-
-                // 将光标移动到下一个编辑位置
-                const nextPosition = new vscode.Position(position.line + 1, 0);
-                editor.selection = new vscode.Selection(nextPosition, nextPosition);
-            });
+        // 检测 //${prefix}-add-begin
+        if (lineText.includes(`//${prefix}-add-begin`) || lineText.includes(`//${prefix}-add`) || lineText.includes(`//${prefix}add`)) {
+            insertText(`//${prefix}-add-begin`, `//${prefix}-add-end`);
         }
 
-		// 如果检测到用户输入了“//${prefix}-replace-begin”
-        if (lineText.includes(`//${prefix}-remove-begin`) || lineText.includes(`//${prefix}-rem`)) {
-            editor.edit(editBuilder => {
-                // 获取当前光标所在行，并插入目标代码
-                const newPosition = position.with(position.line, 0);
-                editBuilder.replace(new vscode.Range(newPosition, position), `//${prefix}-remove-begin\n\n//${prefix}-remove-end`);
-
-                // 将光标移动到下一个编辑位置
-                const nextPosition = new vscode.Position(position.line + 1, 0);
-                editor.selection = new vscode.Selection(nextPosition, nextPosition);
-            });
+        // 检测 //${prefix}-remove-begin
+        if (lineText.includes(`//${prefix}-remove-begin`) || lineText.includes(`//${prefix}-rem`) || lineText.includes(`//${prefix}rem`)) {
+            insertText(`//${prefix}-remove-begin`, `//${prefix}-remove-end`);
         }
     });
 
